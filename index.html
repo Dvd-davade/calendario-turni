@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Turni - 23 Giugno - 4 Luglio 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            text-align: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn.active {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        .week-content {
+            padding: 30px;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .legend-item {
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend-item.chiosco { border-left-color: #3b82f6; }
+        .legend-item.chiosco-giovani { border-left-color: #10b981; }
+        .legend-item.chiosco-basket { border-left-color: #8b5cf6; }
+        .legend-item.cucina { border-left-color: #f59e0b; }
+        .legend-item.calcio { border-left-color: #ef4444; }
+        .legend-item.basket { border-left-color: #eab308; }
+        .legend-item.cassa { border-left-color: #6366f1; }
+        .legend-item.spogliatoi { border-left-color: #ec4899; }
+        
+        .legend-item h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .legend-item p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .day-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid #e9ecef;
+        }
+        
+        .day-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        
+        .day-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .day-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 25px;
+        }
+        
+        .role-card {
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .role-card.chiosco { 
+            border-left-color: #3b82f6; 
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+        .role-card.chiosco-giovani { 
+            border-left-color: #10b981; 
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        }
+        .role-card.chiosco-basket { 
+            border-left-color: #8b5cf6; 
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+        }
+        .role-card.cucina { 
+            border-left-color: #f59e0b; 
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+        .role-card.calcio { 
+            border-left-color: #ef4444; 
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        }
+        .role-card.basket { 
+            border-left-color: #eab308; 
+            background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+        }
+        .role-card.cassa { 
+            border-left-color: #6366f1; 
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        }
+        .role-card.spogliatoi { 
+            border-left-color: #ec4899; 
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+        }
+        
+        .role-card h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .person-slot {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .person-slot:last-child {
+            margin-bottom: 0;
+        }
+        
+        .person-slot.empty {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .summary h3 {
+            color: #1e40af;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .summary-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .summary-item h4 {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .summary-item .count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        
+        .summary-item .label {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .download-section {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .controls, .download-section {
+                display: none;
+            }
+            
+            .day-card {
+                page-break-inside: avoid;
+                margin-bottom: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .roles-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Calendario Turni</h1>
+            <p>18:30 - 23:30 | Due Settimane: 23 Giugno - 4 Luglio 2025</p>
+        </div>
+        
+        <div class="controls">
+            <button class="btn active" onclick="showWeek(1)">Settimana 1 (23-27 Giugno)</button>
+            <button class="btn" onclick="showWeek(2)">Settimana 2 (30 Giu - 4 Lug)</button>
+            <button class="btn" onclick="window.print()">🖨️ Stampa</button>
+            <button class="btn" onclick="saveAsHTML()">💾 Salva HTML</button>
+        </div>
+        
+        <div class="week-content">
+            <!-- Legenda -->
+            <div class="legend">
+                <div class="legend-item chiosco">
+                    <h3>CHIOSCO</h3>
+                    <p>5 persone per turno</p>
+                </div>
+                <div class="legend-item chiosco-giovani">
+                    <h3>CHIOSCO GIOVANI</h3>
+                    <p>4 persone per turno</p>
+                </div>
+                <div class="legend-item chiosco-basket">
+                    <h3>CHIOSCO BASKET</h3>
+                    <p>2 persone per turno</p>
+                </div>
+                <div class="legend-item cucina">
+                    <h3>CUCINA</h3>
+                    <p>5 persone per turno</p>
+                </div>
+                <div class="legend-item calcio">
+                    <h3>CALCIO</h3>
+                    <p>2 persone per turno</p>
+                </div>
+                <div class="legend-item basket">
+                    <h3>BASKET</h3>
+                    <p>2 persone per turno</p>
+                </div>
+                <div class="legend-item cassa">
+                    <h3>CASSA</h3>
+                    <p>2 persone per turno</p>
+                </div>
+                <div class="legend-item spogliatoi">
+                    <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                    <p>2 persone per turno</p>
+                </div>
+            </div>
+            
+            <!-- Settimana 1 -->
+            <div id="week1" class="week-section">
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>🗓️ Lunedì</h2>
+                        <p>23 giugno 2025 • 18:30 - 23:30</p>
+                    </div>
+                    <div class="roles-grid">
+                        <div class="role-card chiosco">
+                            <h3>CHIOSCO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card chiosco-giovani">
+                            <h3>CHIOSCO GIOVANI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                        </div>
+                        <div class="role-card chiosco-basket">
+                            <h3>CHIOSCO BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cucina">
+                            <h3>CUCINA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card calcio">
+                            <h3>CALCIO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card basket">
+                            <h3>BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cassa">
+                            <h3>CASSA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card spogliatoi">
+                            <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Martedì -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>🗓️ Martedì</h2>
+                        <p>24 giugno 2025 • 18:30 - 23:30</p>
+                    </div>
+                    <div class="roles-grid">
+                        <div class="role-card chiosco">
+                            <h3>CHIOSCO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card chiosco-giovani">
+                            <h3>CHIOSCO GIOVANI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                        </div>
+                        <div class="role-card chiosco-basket">
+                            <h3>CHIOSCO BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cucina">
+                            <h3>CUCINA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card calcio">
+                            <h3>CALCIO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card basket">
+                            <h3>BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cassa">
+                            <h3>CASSA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card spogliatoi">
+                            <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mercoledì, Giovedì, Venerdì - struttura simile -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>🗓️ Mercoledì</h2>
+                        <p>25 giugno 2025 • 18:30 - 23:30</p>
+                    </div>
+                    <div class="roles-grid">
+                        <div class="role-card chiosco">
+                            <h3>CHIOSCO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card chiosco-giovani">
+                            <h3>CHIOSCO GIOVANI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                        </div>
+                        <div class="role-card chiosco-basket">
+                            <h3>CHIOSCO BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cucina">
+                            <h3>CUCINA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card calcio">
+                            <h3>CALCIO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card basket">
+                            <h3>BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cassa">
+                            <h3>CASSA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card spogliatoi">
+                            <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>🗓️ Giovedì</h2>
+                        <p>26 giugno 2025 • 18:30 - 23:30</p>
+                    </div>
+                    <div class="roles-grid">
+                        <div class="role-card chiosco">
+                            <h3>CHIOSCO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card chiosco-giovani">
+                            <h3>CHIOSCO GIOVANI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                        </div>
+                        <div class="role-card chiosco-basket">
+                            <h3>CHIOSCO BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cucina">
+                            <h3>CUCINA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card calcio">
+                            <h3>CALCIO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card basket">
+                            <h3>BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cassa">
+                            <h3>CASSA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card spogliatoi">
+                            <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>🗓️ Venerdì</h2>
+                        <p>27 giugno 2025 • 18:30 - 23:30</p>
+                    </div>
+                    <div class="roles-grid">
+                        <div class="role-card chiosco">
+                            <h3>CHIOSCO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card chiosco-giovani">
+                            <h3>CHIOSCO GIOVANI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                        </div>
+                        <div class="role-card chiosco-basket">
+                            <h3>CHIOSCO BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cucina">
+                            <h3>CUCINA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                            <div class="person-slot empty">Nome persona 3</div>
+                            <div class="person-slot empty">Nome persona 4</div>
+                            <div class="person-slot empty">Nome persona 5</div>
+                        </div>
+                        <div class="role-card calcio">
+                            <h3>CALCIO</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card basket">
+                            <h3>BASKET</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card cassa">
+                            <h3>CASSA</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                        <div class="role-card spogliatoi">
+                            <h3>SPOGLIATOI/BAGNI/RIFIUTI</h3>
+                            <div class="person-slot empty">Nome persona 1</div>
+                            <div class="person-slot empty">Nome persona 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary">
+                    <h3>📊 Riepilogo Settimana 1</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <h4>CHIOSCO</h4>
+                            <div class="count">0/25</div>
+                            <div class="label">turni assegnati</div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>CHIOSCO GIOVANI</h4>
+                            <div class="count">0/20</div>
+                            <div class="label">turni assegnati</div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>CHIOSCO BASKET</h4>
+                            <div class="count">0/10</div>
+                            <div class="label">turni assegnati</div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>CUCINA</h4>
+                            <div class="count">0/25</div>
+                            <div class="label">turni assegnati
